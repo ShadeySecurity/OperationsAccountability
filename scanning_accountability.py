@@ -70,10 +70,11 @@ def get_config(args,configfile):
     print("gather_user_data: error: %s" % err)
   return config
 
-def set_firewall():
+def set_firewall(restorefile):
   #TODO
 
 def activate_tcpdump(switch,output):
   #TODO
   
-def upload_output
+def upload_output(path):
+  #TODO

@@ -9,7 +9,7 @@
 echo "Enter handle or name: "
 read HANDLE
 echo "Enter partner network ip address: "
-read DIP
+read PIP
 echo "Enter partner network prefix (CIDR notation): "
 read PREFIX
 if [ -z "$PREFIX" ]; then
@@ -192,7 +192,7 @@ echo "INFO: Firewall setup complete"
 
 # Add IP to config
 cp -fv $CONFIGFOLDER/ifcfg-* /tmp > /dev/null
-echo "IPADDR=$DIP" >> /tmp/ifcfg-$INTERFACE
+echo "IPADDR=$PIP" >> /tmp/ifcfg-$INTERFACE
 if [ -n "$SUBNET" ]; then
 	echo "NETMASK=$SUBNET" >> /tmp/ifcfg-$INTERFACE
 fi
@@ -225,7 +225,7 @@ else
 	echo "INFO: TCPDUMP running"
 fi
 if [ -n "$PREFIX" ]; then
-	# TODO check with Bowen, is $IPADDR supposed to be $DIP?
+	# TODO check with Bowen, is $IPADDR supposed to be $PIP?
 	CURRENTIP=$(ip addr show $INTERFACE | grep -i "$IPADDR/$PREFIX")
 else
 	CURRENTIP=$(ifconfig $INTERFACE | grep -i "inet $IPADDR netmask $SUBNET")

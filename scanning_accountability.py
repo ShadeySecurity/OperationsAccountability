@@ -6,7 +6,15 @@ class pyOperationsAccountability(object):
     def __init__(self):
         import sys
         self.config = {}
-        main(sys.argv,self.config)
+        self.config.update(main(sys.argv,self.config))
+        self.firewall = False
+        self.tcpdump = False
+        self.interfaces = {}
+        self.logging = False
+        self.terminal = False
+        self.upload = False
+        self.localpath = ""
+        self.uploadpath = ""
     def main(self,args,config):
         import signal, sys
         from datetime import datetime
@@ -40,11 +48,21 @@ class pyOperationsAccountability(object):
                 config['osversion'] = dist()
             elif config['os'] == "windows":
                 config['osversion'] = sys.getwindowsversion()
+            # Update global variable
+            self.interfaces[config['primarydevice']] = {"status":set_interface(config['primarydevice'], config['os'],'down')}
+            self.interfaces[config['secondarydevice']] = {"status":set_interface(config['secondarydevice'], config['os'],'up')}
+            self.localpath = config['localpath']
+            self.uploadpath = config['uploadpath']
             # Enable firewall to spec
-            firewallstatus = set_firewall(config)
+            self.firewall = set_firewall(config)
             # If the firewall isnt setup correctly, recover the system
-            if not firewallstatus:
-                recover()
+            self.network = set_network(config)
+            self.tcpdump = set_tcpdump("start", config)
+            self.terminal = exec_terminal(config)
+            self.logging = exec_logging(config['os'])
+            self.recovered = exec_recover(config)
+            self.upload = exec_upload(config)
+            return True
         except Exception as err:
             print("main: error: %s" % err)
     def get_config(self,args,configfile):
@@ -58,17 +76,19 @@ class pyOperationsAccountability(object):
             print("gather_user_data: error: %s" % err)
         # Override with options
         try:
-            opts, args = getopt(args, "hc:u:i:p:I:s:S:P:t:T:g:G:d:D:o:O:f:z:",
+            opts, args = getopt(args, "hc:u:i:p:I:s:S:P:t:T:g:G:d:D:o:O:f:U:",
                                 ["help", "config=", "user=", "ip=", "IP=", "subnet=", "SUBNET=", "prefix=", "PREFIX=",
                                  "team=", "Tracking=", "gateway=", "GATEWAY=", "device=", "DEVICE=", "output=", "Output=",
-                                 "firewall="])
+                                 "firewall=","Upload="])
             for opt, arg in opts:
                 if opt in ("-h", "--help"):
                     print("Usage")
                     print("       i ip: Primary operations interface ip")
                     print("       I IP: Secondary operations interface ip")
-                    print("       s subnet: Primary operations interface subnet mask")
-                    print("       S SUBNET: Secondary operations interface subnet mask")
+                    print("       p prefix: Primary interface prefix (subnet in CIDR notation without /)")
+                    print("       P PREFIX: Secondary interface prefix (subnet in CIDR notation without /)")
+                    print("       s subnet: Primary operations interface subnet mask (not needed if prefix set)")
+                    print("       S SUBNET: Secondary operations interface subnet mask (not needed if prefix set)")
                     print("       g gateway: Primary operations interface gateway")
                     print("       G GATEWAY: Secondary operations interface gateway")
                     print("       d device: Define name of primary operations interface")
@@ -79,7 +99,7 @@ class pyOperationsAccountability(object):
                     print("       u user: name of the user in operation")
                     print("       c config: alternate config file other than default")
                     print("       f firewall: iptables restore file full path")
-                    print("       z: remote secondary path ip (if off system)")
+                    print("       U Upload: upload path")
                 elif opt in ("-c", "--config"):
                     config.update(ConfigParser.read(arg))
                 elif opt in ("-i", "--ip"):
@@ -103,21 +123,24 @@ class pyOperationsAccountability(object):
                 elif opt in ("-T", "--Tracking"):
                     config['tracking'] = arg
                 elif opt in ('-o', "--output"):
-                    config['outputpath'] = arg
+                    config['localpath'] = arg
                 elif opt in ('-u', '--user'):
                     config['user'] = arg
                 elif opt in ('-O', "--Output"):
                     config['secondarypath'] = arg
                 elif opt in ('-f','--firewall'):
                     config['firewallrestore'] = arg
-                elif opt in "-z":
-                    config['remoteip'] = arg
+                elif opt in "-U":
+                    config['upload'] = arg
+                elif opt in ("-p","--prefix"):
+                    config['primaryprefix'] = arg
+                elif opt in ('-P','--PREFIX'):
+                    config['secondaryprefix'] = arg
                 else:
                     print("get_config: Invalid option: %s" % opt)
         except Exception as err:
             print("gather_user_data: error: %s" % err)
         return config
-
     def set_firewall(self, config):
         from subprocess import call
         if osname == "linux":
@@ -151,19 +174,20 @@ class pyOperationsAccountability(object):
             except Exception as err:
                 print("set_firewall: error: %s" % err)
         elif osname == "windows":
-            #TODO by @JKauff
+            #TODO by @JKauff, delete pass when updated
+            pass
         else:
             print("set_firewall: warning: Unable to determine how to set up your firewall for %s %s!" % (config['os'],' '.join(config['osversion'])))
-            return
+            return False
         print("set_firewall: Succesfully setup your firewall to log and match your restore file.")
-        pass
+        return True
     def set_tcpdump(self, action,config):
         from subprocess import call
         import socket
         if action == "start":
             if config['os'] == "linux":
                 call(['sudo','-b','tcpdump','-C','1024','-s0','-l','-n','-i', config['primarydevice'],'-w','%s/%s-%s-accountbility.pcap' % (config['output'],datetime.utcnow().strftime("%m%d%Y-%H%M%S"),config['user'])])
-            elif config['os'] == "windows" amd config['listener'] == "tcpdump":
+            elif config['os'] == "windows" and config['listener'] == "tcpdump":
                 call(['tcpdump', '-C', '1024', '-s0', '-l',' -n','-i','%s' % config['primarydevice'],'-w',
                       '%s/%s-%s-accountbility.pcap' % (config['output'],
                                                        datetime.utcnow().strftime("%m%d%Y-%H%M%S"), config['user'])])
@@ -177,7 +201,7 @@ class pyOperationsAccountability(object):
                     print('Did you run this as root? Raw socket typically needs it.')
                     return
                 # receive a packet
-                with open('%s/%s-%s-accountbility.pcap' % (config['output'], datetime.utcnow().strftime("%m%d%Y-%H%M%S"), config['user'), 'w') as thefile:
+                with open('%s/%s-%s-accountbility.pcap' % (config['output'], datetime.utcnow().strftime("%m%d%Y-%H%M%S"), config['user']), 'w') as thefile:
                     while True:
                         packet = s.recvfrom(65565)
                         # packet string from tuple
@@ -216,39 +240,172 @@ class pyOperationsAccountability(object):
                         thefile.writelines('Data : ' + data)
             else:
                 print("set_tcpdump: Critical: Unable to determine pcap provider for your os!")
+                from time import sleep
+                sleep(2)
+                return False
         elif action == "stop":
             if config['os'] == "linux":
                 call(['sudo','pkill','-9','tcpdump'])
             elif config['os'] == "windows":
-                #TODO @JKauff tasking
+                #TODO @JKauff tasking, delete pass when done
+                pass
             else:
                 call(['sudo', 'pkill', '-9', 'tcpdump'])
                 print("set_tcpdump: Warning: Default os type kill feature used.")
-    def upload_output(self. config):
-        #TODO
-        pass
-    def recover():
-        #TODO
-        pass
+                from time import sleep
+                sleep(2)
+                return False
+        return True
     def set_network(self, config):
-        #TODO
+        from re import match
         # Note: Need to ask users if they want to change from default configuration (for network changes)
-        pass
-    def set_clilogging(self):
-        #TODO
-        pass
-    def launch_terminal(self, os, osversion):
+        userinput = input("Would you like to override network defaults (yes/no): ")
+        while not config['primarydevice'] or not config['primarygateway'] or not (config['primarysubnet'] or config['primaryprefix']) or match(r"^[yY]([eE][sS])?$", userinput) :
+            config['primarydevice'] = input("Input the name of the primary operations device: ")
+            config['primaryip'] = input("Input the primary device ip address (enter dhcp for dhcp): ")
+            if not config['primaryip'] == "dhcp":
+                config['primaryprefix'] = input("Input the primary device subnet prefix (leave blank to put in dot notation): ")
+                if not config['primaryprefix']:
+                    config['primarysubnet'] = input("Input the primary device subnet mask: ")
+                config['primarygateway'] = input("Input the primary device gateway: ")
+            config['secondarydevice'] = input("Input the name of the secondary operations device (blank if none): ")
+            if config['secondarydevice']:
+                config['secondaryip'] = input("Input the secondary device ip address (enter dhcp for dhcp): ")
+                if not config['secondaryip'] == "dhcp":
+                    config['secondaryprefix'] = input("Input the secondary device subnet prefix (leave blank to put in dot notation): ")
+                    if not config['secondaryprefix']:
+                        config['secondarysubnet'] = input("Input the secondary device subnet mask: ")
+                    config['secondarygateway'] = input("Input the secondary device gateway: ")
+            userinput = ""
+        if config['os'] == "linux":
+            if match(r"^[rR]([hHeElL]{3}|edhat).*", config['osversion'][0]):
+                netconf = ["TYPE=ethernet", "NAME=%s" % config['primarydevice'], "DEVICE=%s" % config['primarydevice'], "DEFROUTE=yes", "IPV4_FAILURE_FATAL=no", "IPV6INIT=no","MTU=%s" % config['MTU'], "ONBOOT=no"]
+                with open("/etc/sysconfig/network-scripts/ifcfg-%s" % config['primarydevice'], 'w') as thefile:
+                    if config['primaryip'] == "dhcp":
+                        netconf += ["BOOTPROTO=dhcp"]
+                    else:
+                        netconf += ["BOOTPROTO=none","IPADDR=%s" % config['primaryip'], "GATEWAY=%s" % config['primarygateway']]
+                        if config['primaryprefix']:
+                            netconf += ["PREFIX=%s" % config['primaryprefix']]
+                        else:
+                            netconf += ["NETMASK=%s" % config['primarysubnet']]
+                    thefile.writelines(netconf)
+                    thefile.close()
+                netconf = ["TYPE=ethernet", "NAME=%s" % config['primarydevice'], "DEVICE=%s" % config['primarydevice'], "DEFROUTE=yes", "IPV4_FAILURE_FATAL=no", "IPV6INIT=no","MTU=%s" % config['mtu'], "ONBOOT=no"]
+                if config['secondarydevice']:
+                    with open("/etc/sysconfig/network-scripts/ifcfg-%s" % config['secondarydevice'], 'w') as thefile:
+                        if config['secondaryip'] == "dhcp":
+                            netconf += ["BOOTPROTO=dhcp"]
+                        else:
+                            netconf += ["BOOTPROTO=none","IPADDR=%s" % config['secondaryip'], "GATEWAY=%s" % config['secondarygateway']]
+                            if config['secondaryprefix']:
+                                netconf += ["PREFIX=%s" % config['secondaryprefix']]
+                            else:
+                                netconf += ["NETMASK=%s" % config['secondarysubnet']]
+                        thefile.writelines(netconf)
+                        thefile.close()
+            elif match(r"^([Uu]buntu|[Dd]ebian)", config['osversion'][0]):
+                with open("/etc/network/interfaces.d/%s.cfg" % config['primarydevice'], 'w') as thefile:
+                    if config['primaryip'] == "dhcp":
+                        netconf = ["iface %s inet dhcp"]
+                    else:
+                        netconf = ["iface %s inet static"]
+                        if config['primaryprefix']:
+                            netconf += ["address %s/%s" % (config['primaryip'],config['primaryprefix'])]
+                        else:
+                            netconf += ["address %s" % config['primaryip'], "netmask %s" % config['primaryprefix']]
+                        netconf += ["gateway %s" % config['primarygateway'], "mtu %s" % config['mtu']]
+                    thefile.writelines(netconf)
+                    thefile.close()
+                if config['secondarydevice']:
+                    with open("/etc/network/interfaces.d/%s.cfg" % config['secondarydevice'], 'w') as thefile:
+                        if config['secondaryip'] == "dhcp":
+                            netconf = ["iface %s inet dhcp"]
+                        else:
+                            netconf = ["iface %s inet static"]
+                            if config['secondaryprefix']:
+                                netconf += ["address %s/%s" % (config['secondaryip'],config['secondaryprefix'])]
+                            else:
+                                netconf += ["address %s" % config['secondaryip'], "netmask %s" % config['secondaryprefix']]
+                            netconf += ["gateway %s" % config['secondarygateway'], "mtu %s" % config['mtu']]
+                        thefile.writelines(netconf)
+                        thefile.close()
+            else:
+                print("set_network: warning: Unsupported linux os, cannot set interface.")
+                return False            
+        elif config['os'] == "windows":
+            #TODO @JKAUFF, remove pass when done
+            pass
+        else:
+            print("set_network: warning: Unsupported os, cannot set interface.")
+            return False
+        self.interfaces[config['primarydevice']] = {"status":set_interface(config['primarydevice'], config['os'],'up')}
+        if config['secondarydevice']:
+            self.interfaces[config['secondarydevice']] = {"status":set_interface(config['secondarydevice'], config['os'],'up')}
+        return True
+    def set_interface(self, interface, os , state):
+        from subprocess import call
+        x = input("Press enter to bring %s to state %s." % (interface, state))
+        if os  == "linux":
+            try:
+                if state == "up":
+                    call(['sudo','ifup','%s' % interface])
+                elif state == "down":
+                    call(['sudo','ifdown','%s' % interface])
+                else:
+                    print("set_interfaces: error: invalid state given.")
+            except Exception as err:
+                print("set_interfaces: error: ip command (ifup/ifdown) failed! Trying traditional.")
+                try:
+                    if state == "up":
+                        call(['sudo','ifconfig','%s' % interface, 'up'])
+                    elif state == "down":
+                        call(['sudo','ifconfig','%s' % interface, 'down'])
+                    else:
+                        print("set_interfaces: error: invalid state given.")
+                except Exception as err:
+                    print("set_interfaces: critical: Failed to bring interface %s to state %s." % (interface,state))
+                    from time import pause
+                    pause(3)            
+        elif os == "windows":
+            # TODO @JKAUFF, remove pass when done
+            pass
+        else:
+            print("set_interface: error: Unsupported OS passed. Unable to bring interface %s to state %s." % (interface,state))
+            return False
+        return True
+    def set_clilogging(self,os):
+        if os == "linux":
+            addhistory ="export PROMPT_COMMAND='history -a'"
+            with open("~/.bashrc",'a') as thefile:
+                thefile.writelines([addhistory])
+                thefile.close()
+            return True
+        elif os == "windows":
+            # TODO @JKAUFF remove pass when done
+            pass
+        else:
+            print("set_clilogging: error: Unsupported OS passed. Not doing anything.")
+            return False
+        return True
+    def exec_terminal(self, os, osversion):
         from subprocess import call
         if os == "linux":
             call(['gnome-terminal'])
-    def actionlog(self, config):
+        elif os == "windows":
+            #TODO @JKAUFF remove pass when done
+            pass
+        else:
+            print("set_clilogging: error: Unsupported OS passed. Not doing anything.")
+            return False
+        return True
+    def exec_logging(self, config):
         import os
         from datetime import datetime
         userinput = ''
-        thelog = ['']
         # Open CSV files for operations logging
         with open('%s%s-%s-operationslog.csv' % (config['output'],config['now'], config['user']), 'w') as csvfile:
-            cfieldnames = ["DateTime','User',','action']
+            cfieldnames = ['DateTime','User','action']
             writer = csv.DictWriter(csvfile, fieldnames=cfieldnames)
             writer.writeheader()
             # Iterate through user inputs
@@ -274,15 +431,16 @@ class pyOperationsAccountability(object):
                 elif userinput == "pause":
                     # This feature is because we noticed with interface bounces tcpdump will go supernova
                     writer.writerows({'DateTime':datetime.utcnow().strftime("%m%d%Y-%H%M%S"), 'User':config['user'],'action':'Warning: User has paused accountability!'})
-                    set_tcpdump('stop',config)
+                    self.tcpdump = set_tcpdump('stop',config)
+                    self.interfaces[config['primarydevice']] = {"status":set_interface(config['primarydevice'], config['os'],'down')}
                     x = input("Press Enter To Continue Accountability.")
                     # Validate network setup
-                    set_network(config)
+                    self.network = set_network(config)
                     # Re enable tcpdump
-                    set_tcpdump('start',config)
+                    self.tcpdump = set_tcpdump('start',config)
                 elif userinput == "reload":
                     # In case user needs to reload the firewall after making changes to iptables restore file
-                    set_firewall(config)
+                    self.firewall = set_firewall(config)
                     print("actionlog: Firewall reload completed.")
                     # We add this pause so user can see the above output
                     from time import sleep
@@ -296,7 +454,30 @@ class pyOperationsAccountability(object):
                     from time import sleep
                     # We add this pause so user can see the above output
                     sleep(2)
-
+        return True
+    def exec_upload(self, config):
+        if not config['upload']:
+            return False
+        from subprocess import call
+        try:
+            if config['os'] == "linux":
+                call(['cp','-rf',config['localpath'],config['uploadpath']])
+            elif config['os'] == "windows":
+                #TODO @JKAUFF remove pass when done
+                pass
+            else:
+                print("exec_upload: error: unsupported OS")
+                return False
+        except Exception as err:
+            print("exec_upload: Upload failed due to %s." % err)
+            return False
+        return True
+    def exec_recover():
+        print("exec_recover: warning: beginning recovery steps!")
+        self.interfaces[config['primarydevice']] = {"status":set_interface(config['primarydevice'], config['os'],'down')}        
+        self.tcpdump = set_tcpdump("stop",config)
+        print("exec_recover: Recovery completed!")
+        return True
 
 
 

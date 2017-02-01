@@ -1,6 +1,7 @@
 #! /usr/bin/python
 
 # New script to replace bash script
+from struct import *
 
 def main(args):
     import signal, sys
@@ -154,8 +155,90 @@ def set_firewall(config):
     print("set_firewall: Succesfully setup your firewall to log and match your restore file.")
     pass
 def set_tcpdump(action,config):
-    #TODO
-    pass
+    from subprocess import call
+    import socket
+    if action == "start":
+        if config['os'] == "linux":
+            call(['sudo','-b','tcpdump','-C','1024','-s0',''-l','-n','-i','%s' % config['primarydevice'],
+                            '-w','%s/%s-%s-accountbility.pcap' % (config['output'],
+                                        datetime.utcnow().strftime("%m%d%Y-%H%M%S"),config['user'')])
+        elif config['os'] == "windows" amd config['listener'] == "tcpdump":
+            call(['tcpdump', '-C', '1024', '-s0', '' - l',' - n',' - i',' % s' % config['primarydevice'],
+                                                                                                                    '-w',
+                  '%s/%s-%s-accountbility.pcap' % (config['output'],
+                                                   datetime.utcnow().strftime("%m%d%Y-%H%M%S"), config['user'')])
+        elif config['listener'] == "raw":
+            # Thanks for this section to http://www.binarytides.com/python-packet-sniffer-code-linux/
+            # create an INET, STREAMing socket
+            try:
+                s = socket.socket(socket.AF_INET, socket.SOCK_RAW)
+            except socket.error, msg:
+                print ('set_tcpdump: Error: Raw Socket Listener could not be created. Error Code : ' + str(msg[0]) + ' Message ' + msg[1])
+                print('Did you run this as root? Raw socket typically needs it.')
+                return
+            # receive a packet
+            with open('%s/%s-%s-accountbility.pcap' % (config['output'], datetime.utcnow().strftime("%m%d%Y-%H%M%S"), config['user'), 'w') as thefile:
+                while True:
+                    packet = s.recvfrom(65565)
+
+                    # packet string from tuple
+                    packet = packet[0]
+
+                    # take first 20 characters for the ip header
+                    ip_header = packet[0:20]
+
+                    # now unpack them :)
+                    iph = unpack('!BBHHHBBH4s4s', ip_header)
+
+                    version_ihl = iph[0]
+                    version = version_ihl >> 4
+                    ihl = version_ihl & 0xF
+
+                    iph_length = ihl * 4
+
+                    ttl = iph[5]
+                    protocol = iph[6]
+                    s_addr = socket.inet_ntoa(iph[8]);
+                    d_addr = socket.inet_ntoa(iph[9]);
+
+                    thefile.writelines('Version : ' + str(version) + ' IP Header Length : ' + str(ihl) + ' TTL : ' + str(
+                        ttl) + ' Protocol : ' + str(protocol) + ' Source Address : ' + str(
+                        s_addr) + ' Destination Address : ' + str(d_addr))
+
+                    tcp_header = packet[iph_length:iph_length + 20]
+
+                    # now unpack them :)
+                    tcph = unpack('!HHLLBBHHH', tcp_header)
+
+                    source_port = tcph[0]
+                    dest_port = tcph[1]
+                    sequence = tcph[2]
+                    acknowledgement = tcph[3]
+                    doff_reserved = tcph[4]
+                    tcph_length = doff_reserved >> 4
+
+                    thefile.writelines('Source Port : ' + str(source_port) + ' Dest Port : ' + str(
+                        dest_port) + ' Sequence Number : ' + str(sequence) + ' Acknowledgement : ' + str(
+                        acknowledgement) + ' TCP header length : ' + str(tcph_length))
+
+                    h_size = iph_length + tcph_length * 4
+                    data_size = len(packet) - h_size
+
+                    # get data from the packet
+                    data = packet[h_size:]
+
+                    thefile.writelines('Data : ' + data)
+        else:
+            print("set_tcpdump: Critical: Unable to determine pcap provider for your os!")
+    elif action == "stop":
+        if config['os'] == "linux":
+            call(['sudo','pkill','-9','tcpdump'])
+        elif config['os'] == "windows":
+            #TODO @JKauff tasking
+        else:
+            call(['sudo', 'pkill', '-9', 'tcpdump'])
+            print("set_tcpdump: Warning: Default os type kill feature used.")
+
 def upload_output(config):
     #TODO
     pass

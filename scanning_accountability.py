@@ -131,7 +131,7 @@ class pyOperationsAccountability(object):
                 elif opt in ('-f','--firewall'):
                     config['firewallrestore'] = arg
                 elif opt in "-U":
-                    config['upload'] = arg
+                    config['uploadpath'] = arg
                 elif opt in ("-p","--prefix"):
                     config['primaryprefix'] = arg
                 elif opt in ('-P','--PREFIX'):
@@ -160,7 +160,7 @@ class pyOperationsAccountability(object):
                     conffile = '/etc/syslog.conf'
                 with open(conffile,'w') as logconf:
                     thefile = logconf.readlines()
-                    thefile = ['kern.*        %s/%s-%s-fwaccountability.log' % (config['outputpath'],config['now'],config['user'])] + thefile
+                    thefile = ['kern.*        %s/%s-%s-fwaccountability.log' % (config['uploadpath'],config['now'],config['user'])] + thefile
                     logconf.writelines(thefile)
                     logconf.close()
                 if "Redhat" in config['osversion'] or "rhel" in config['osversion']:
@@ -186,7 +186,7 @@ class pyOperationsAccountability(object):
         import socket
         if action == "start":
             if config['os'] == "linux":
-                call(['sudo','-b','tcpdump','-C','1024','-s0','-l','-n','-i', config['primarydevice'],'-w','%s/%s-%s-accountbility.pcap' % (config['output'],datetime.utcnow().strftime("%m%d%Y-%H%M%S"),config['user'])])
+                call(['sudo','-b','tcpdump','-C','1024','-s0','-l','-n','-i', config['primarydevice'],'-w','%s/%s-%s-accountbility.pcap' % (config['uploadpath'],datetime.utcnow().strftime("%m%d%Y-%H%M%S"),config['user'])])
             elif config['os'] == "windows" and config['listener'] == "tcpdump":
                 call(['tcpdump', '-C', '1024', '-s0', '-l',' -n','-i','%s' % config['primarydevice'],'-w',
                       '%s/%s-%s-accountbility.pcap' % (config['output'],
@@ -201,7 +201,7 @@ class pyOperationsAccountability(object):
                     print('Did you run this as root? Raw socket typically needs it.')
                     return
                 # receive a packet
-                with open('%s/%s-%s-accountbility.pcap' % (config['output'], datetime.utcnow().strftime("%m%d%Y-%H%M%S"), config['user']), 'w') as thefile:
+                with open('%s/%s-%s-accountbility.pcap' % (config['localpath'], datetime.utcnow().strftime("%m%d%Y-%H%M%S"), config['user']), 'w') as thefile:
                     while True:
                         packet = s.recvfrom(65565)
                         # packet string from tuple
@@ -232,7 +232,7 @@ class pyOperationsAccountability(object):
                         tcph_length = doff_reserved >> 4
                         thefile.writelines('Source Port : ' + str(source_port) + ' Dest Port : ' + str(
                             dest_port) + ' Sequence Number : ' + str(sequence) + ' Acknowledgement : ' + str(
-                            acknowledgement) + ' TCP header length : ' + str(tcph_length))
+                            acknowledgement) + ' header length : ' + str(tcph_length))
                         h_size = iph_length + tcph_length * 4
                         data_size = len(packet) - h_size
                         # get data from the packet
@@ -404,7 +404,7 @@ class pyOperationsAccountability(object):
         from datetime import datetime
         userinput = ''
         # Open CSV files for operations logging
-        with open('%s%s-%s-operationslog.csv' % (config['output'],config['now'], config['user']), 'w') as csvfile:
+        with open('%s%s-%s-%s-operationslog.csv' % (config['localpath'],config['now'], config['team'],config['user']), 'w') as csvfile:
             cfieldnames = ['DateTime','User','action']
             writer = csv.DictWriter(csvfile, fieldnames=cfieldnames)
             writer.writeheader()
@@ -456,7 +456,7 @@ class pyOperationsAccountability(object):
                     sleep(2)
         return True
     def exec_upload(self, config):
-        if not config['upload']:
+        if not config['localpath'] or not config['uploadpath']:
             return False
         from subprocess import call
         try:
@@ -478,6 +478,3 @@ class pyOperationsAccountability(object):
         self.tcpdump = set_tcpdump("stop",config)
         print("exec_recover: Recovery completed!")
         return True
-
-
-

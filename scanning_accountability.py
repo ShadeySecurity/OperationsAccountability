@@ -61,10 +61,10 @@ class pyOperationsAccountability(object):
             self.terminal = exec_terminal(config)
             self.logging = exec_logging(config['os'])
             self.recovered = exec_recover(config)
-            self.upload = exec_upload(config)
-            return True
+            self.upload = exec_upload(config)           
         except Exception as err:
             print("main: error: %s" % err)
+        return config
     def get_config(self,args,configfile):
         # Imports
         import ConfigParser
@@ -478,3 +478,5 @@ class pyOperationsAccountability(object):
         self.tcpdump = set_tcpdump("stop",config)
         print("exec_recover: Recovery completed!")
         return True
+if __name__ = "main:
+    x = pyOperationsAccountability()

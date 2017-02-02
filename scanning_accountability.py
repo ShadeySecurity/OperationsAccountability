@@ -479,4 +479,5 @@ class pyOperationsAccountability(object):
         print("exec_recover: Recovery completed!")
         return True
 if __name__ = "main:
+    import pyOperationsAccountability
     x = pyOperationsAccountability()

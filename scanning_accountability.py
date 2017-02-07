@@ -478,6 +478,6 @@ class pyOperationsAccountability(object):
         self.tcpdump = set_tcpdump("stop",config)
         print("exec_recover: Recovery completed!")
         return True
-if __name__ = "main:
+if __name__ == "main":
     import pyOperationsAccountability
     x = pyOperationsAccountability()

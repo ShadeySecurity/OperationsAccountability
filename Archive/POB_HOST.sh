@@ -8,15 +8,15 @@
 # Add our entry to hosts file
 echo "Enter handle or name: "
 read HANDLE
-echo "Enter partner network ip address: "
+echo "Enter customer network ip address: "
 read PIP
-echo "Enter partner network prefix (CIDR notation): "
+echo "Enter customer network prefix (CIDR notation): "
 read PREFIX
 if [ -z "$PREFIX" ]; then
 	echo "Enter subnet mask (full dot notation): "
 	read SUBNET
 fi
-echo "Enter partner network gateway IP address: "
+echo "Enter customer network gateway IP address: "
 read GATEWAY
 echo "Enter opnumber number: "
 read OPNUMBER
@@ -89,7 +89,7 @@ function cleanup
 
 	echo "INFO: Cleanup complete"
 
-	echo "DISCONNECT VM EXTERNAL INTERFACE FOR operation PARTNER NETWORK. Press enter to continue."
+	echo "DISCONNECT VM EXTERNAL INTERFACE FOR operation customer NETWORK. Press enter to continue."
 	read n
 }
 trap "cleanup; exit" SIGHUP SIGINT SIGTERM
@@ -206,7 +206,7 @@ sudo cp -fv /tmp/ifcfg-$INTERFACE /etc/sysconfig/network-scripts > /dev/null
 sudo cp -fu $CONFIGFOLDER/sshd_config /etc/ssh > /dev/null
 
 # Bring interface up so we can start pcap. VM interface should still be disconnected.
-echo "VERIFY THAT VM INTERFACE FOR operation PARTNER NETWORK IS DISCONNECTED"
+echo "VERIFY THAT VM INTERFACE FOR operation customer NETWORK IS DISCONNECTED"
 ECHO "Interface will be brought up in OS in order to start pcap. Press enter to continue."
 read n
 sudo ifup $INTERFACE > /dev/null
@@ -242,7 +242,7 @@ sudo iptables -nvL | less
 echo "EXIT SCRIPT IF RULES ARE NOT AS EXPECTED. Press enter to continue."
 read n
 
-echo "CONNECT VM INTERFACE FOR operation PARTNER NETWORK. Press enter to continue."
+echo "CONNECT VM INTERFACE FOR operation customer NETWORK. Press enter to continue."
 read n
 
 # For reasons unknown, bringing interface up takes over default gw and kills operation share connectivity
@@ -276,7 +276,7 @@ done
 
 sudo chown <user>:<user> "$opnumberLOCALFOLDER" -R
 
-# Cleanup function disables operation partner network interface, stops tcpdump, and resets firewall rules
+# Cleanup function disables operation customer network interface, stops tcpdump, and resets firewall rules
 cleanup
 
 # Move pcaps to local opnumber folder

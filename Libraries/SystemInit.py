@@ -8,22 +8,16 @@ class SystemInit:
         self.autoip = False
         self.mac = "00:00:00:00:00:00"
         self.os = {"Family":"linux","Version":"rhel"}
+        self.netconf = {"lo":"/etc/sysconfig/network-scipts/ifcfg-lo"}
 
     def SetupNetwork(self, osinfo):
-        from subprocess import call
         if type(osinfo) is not dict or len(osinfo) > 4:
             return False
-        if osinfo["Family"] == "rhel":
-            call("sudo ip addr add %s dev %")
-        elif osinfo["Family"] == "linux":
+        if osinfo["Family"] == "linux":
 
         elif osinfo["Family"] == "windows":
-            call("")
-        elif osinfo["Family"] == "OSX":
-            # TODO: Build OSX management
-            return False
-        else:
-            return False
+
+        elif osinfo["Family"] == "osx":
 
 
     def DetectOs(self):

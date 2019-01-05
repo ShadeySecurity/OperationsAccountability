@@ -18,29 +18,29 @@ if [ -z "$PREFIX" ]; then
 fi
 echo "Enter partner network gateway IP address: "
 read GATEWAY
-echo "Enter sortie number: "
-read SORTIE
-echo "Enter squad: "
-read SQUAD
+echo "Enter opnumber number: "
+read OPNUMBER
+echo "Enter team: "
+read team
 history -c
 
 
 #############
 # VARIABLES #
 #############
-MISSIONLOCAL=""
-SORTIELOCALFOLDER="$MISSIONLOCAL/sortie$SORTIE"
-ACCOUNTABILITYFOLDER="$SORTIELOCALFOLDER/accountability"
-OUTPUTFOLDER="$SORTIELOCALFOLDER/output"
+operationLOCAL=""
+opnumberLOCALFOLDER="$operationLOCAL/opnumber$opnumber"
+ACCOUNTABILITYFOLDER="$opnumberLOCALFOLDER/accountability"
+OUTPUTFOLDER="$opnumberLOCALFOLDER/output"
 CONFIGFOLDER=""
-SORTIEDRIVE=""
+opnumberDRIVE=""
 SHAREDRIVEIP=""
 SHAREDRIVESHARE=""
 SHAREMOUNT=""
 ACTION="initial"
-CREWLOGFILE="$ACCOUNTABILITYFOLDER/CrewLog-$(dare+'%Y%m%d_%H%M%S')_Sortie_$SORTIE_$HANDLE.csv"
-BASHFILE="$ACCOUNTABILITYFOLDER/BashHistory_$(date+'%Y%m%d_%H%M%S')_Sortie_$SORTIE_$HANDLE"
-PCAP="/tmp/PCAP-$(date +'%Y%m%d_%H%M%S')_Sortie_$SORTIE_$HANDLE.pcap"
+CREWLOGFILE="$ACCOUNTABILITYFOLDER/CrewLog-$(dare+'%Y%m%d_%H%M%S')_opnumber_$opnumber_$HANDLE.csv"
+BASHFILE="$ACCOUNTABILITYFOLDER/BashHistory_$(date+'%Y%m%d_%H%M%S')_opnumber_$opnumber_$HANDLE"
+PCAP="/tmp/PCAP-$(date +'%Y%m%d_%H%M%S')_opnumber_$opnumber_$HANDLE.pcap"
 INTERFACE=""
 # TODO get current user and assign to variable. Replace all <user> entries below with variable.
 
@@ -89,7 +89,7 @@ function cleanup
 
 	echo "INFO: Cleanup complete"
 
-	echo "DISCONNECT VM EXTERNAL INTERFACE FOR MISSION PARTNER NETWORK. Press enter to continue."
+	echo "DISCONNECT VM EXTERNAL INTERFACE FOR operation PARTNER NETWORK. Press enter to continue."
 	read n
 }
 trap "cleanup; exit" SIGHUP SIGINT SIGTERM
@@ -117,37 +117,37 @@ sudo iptables --flush
 # Add allow rules for share drive
 sudo iptables -I INPUT -j ACCEPT -d $SHAREDRIVEIP
 sudo iptables -I OUTPUT -j ACCEPT -d $SHAREDRIVEIP
-# Add logging rule for outbound sortie traffic
-sudo iptables -I OUTPUT -j LOG --log-prefix "OUTBOUND SORTIE $SORTIE TRAFFIC"
+# Add logging rule for outbound opnumber traffic
+sudo iptables -I OUTPUT -j LOG --log-prefix "OUTBOUND opnumber $opnumber TRAFFIC"
 
-# Setup local sortie folder
+# Setup local opnumber folder
 if [ ! -d "$ACCOUNTABILITYFOLDER" ]; then
 	sudo mkdir -p "$ACCOUNTABILITYFOLDER"
 fi
 if [ ! -d "$OUTPUTFOLDER" ]; then
 	sudo mkdir -p "$OUTPUTFOLDER"
 fi
-sudo chown <user>:<user> $SORTIELOCALFOLDER -R
+sudo chown <user>:<user> $opnumberLOCALFOLDER -R
 echo "INFO: Local directory setup complete"
 
 # Mount share
-if [ ! -d "$MISSIONLOCAL/mission-share" ]; then
+if [ ! -d "$operationLOCAL/operation-share" ]; then
 	sudo mkdir -p "$SHAREMOUNT"
 fi
 # TODO replace <share_dir> with correct directory
-if [ ! -d "$MISSIONLOCAL/mission-share/<share_dir>" ]; then
+if [ ! -d "$operationLOCAL/operation-share/<share_dir>" ]; then
 	sudo mount -t cifs -o username=<user> //$SHAREDRIVEIP/$SHAREDRIVESHARE $SHAREMOUNT
 fi
 echo "INFO: Remote directory setup complete"
 
 # Get host files from remote share
-if [ ! -f "$SORTIEDRIVE/hosts/trusted.hosts" -o ! -f "$SORTIEDRIVE/hosts/target.hosts" ]; then
-	echo "WARNING: trusted or target hosts missing from sortie folder on mission share."
+if [ ! -f "$opnumberDRIVE/hosts/trusted.hosts" -o ! -f "$opnumberDRIVE/hosts/target.hosts" ]; then
+	echo "WARNING: trusted or target hosts missing from opnumber folder on operation share."
 	echo "Exit script now if host files are required."
 	read n
 fi
-sudo cp -fvu $SORTIEDRIVE/hosts/trusted.hosts /etc > /dev/null
-sudo cp -fvu $SORTIEDRIVE/hosts/target.hosts /etc > /dev/null
+sudo cp -fvu $opnumberDRIVE/hosts/trusted.hosts /etc > /dev/null
+sudo cp -fvu $opnumberDRIVE/hosts/target.hosts /etc > /dev/null
 # Create blank host files if not present
 if [ ! -f /etc/trusted.hosts ]; then
 	echo "" | sudo tee /etc/trusted.hosts
@@ -206,7 +206,7 @@ sudo cp -fv /tmp/ifcfg-$INTERFACE /etc/sysconfig/network-scripts > /dev/null
 sudo cp -fu $CONFIGFOLDER/sshd_config /etc/ssh > /dev/null
 
 # Bring interface up so we can start pcap. VM interface should still be disconnected.
-echo "VERIFY THAT VM INTERFACE FOR MISSION PARTNER NETWORK IS DISCONNECTED"
+echo "VERIFY THAT VM INTERFACE FOR operation PARTNER NETWORK IS DISCONNECTED"
 ECHO "Interface will be brought up in OS in order to start pcap. Press enter to continue."
 read n
 sudo ifup $INTERFACE > /dev/null
@@ -242,17 +242,17 @@ sudo iptables -nvL | less
 echo "EXIT SCRIPT IF RULES ARE NOT AS EXPECTED. Press enter to continue."
 read n
 
-echo "CONNECT VM INTERFACE FOR MISSION PARTNER NETWORK. Press enter to continue."
+echo "CONNECT VM INTERFACE FOR operation PARTNER NETWORK. Press enter to continue."
 read n
 
-# For reasons unknown, bringing interface up takes over default gw and kills mission share connectivity
+# For reasons unknown, bringing interface up takes over default gw and kills operation share connectivity
 # Add static route back in
-# TODO add mission share subnet and interface name back in
-sudo route add -net <mission-share-subnet> <interface>
+# TODO add operation share subnet and interface name back in
+sudo route add -net <operation-share-subnet> <interface>
 
 
 ##########
-# SORTIE #
+# opnumber #
 ##########
 
 echo "OPENING NEW TERMINAL RUNNING TO RUN COMMANDS"
@@ -261,7 +261,7 @@ gnome-terminal
 echo "Date,Hand or Name,Action" >> $CREWLOGFILE
 while [ ! "$ACTION" = "exit" ]
 do
-	echo "Action Taken (type exit to finish sortie): "
+	echo "Action Taken (type exit to finish opnumber): "
 	read ACTION
 	if [ "$ACTION" = ]; then
 		break
@@ -271,23 +271,23 @@ done
 
 
 ###############
-# POST SORTIE #
+# POST opnumber #
 ###############
 
-sudo chown <user>:<user> "$SORTIELOCALFOLDER" -R
+sudo chown <user>:<user> "$opnumberLOCALFOLDER" -R
 
-# Cleanup function disables mission partner network interface, stops tcpdump, and resets firewall rules
+# Cleanup function disables operation partner network interface, stops tcpdump, and resets firewall rules
 cleanup
 
-# Move pcaps to local sortie folder
+# Move pcaps to local opnumber folder
 mv $PCAP $ACCOUNTABILITYFOLDER > /dev/null
 
-# Copy command history to sortie folder
+# Copy command history to opnumber folder
 cp -fu /home/<user>/.bash_history $BASHFILE > /dev/null
 
-# Upload all files to mission share
-echo "INFO: Beginning upload to mission share"
-cp -rfv $SORTIELOCALFOLDER/* $SORTIEDRIVE > /dev/null
+# Upload all files to operation share
+echo "INFO: Beginning upload to operation share"
+cp -rfv $opnumberLOCALFOLDER/* $opnumberDRIVE > /dev/null
 echo "INFO: File upload complete"
 
 echo "INFO: Script complete"

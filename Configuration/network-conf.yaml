@@ -1,0 +1,7 @@
+# Be sure to assign host_ip and host_netmask in inventory file if not doing DHCP...
+# If no hostname set, or if want to set one, be sure to set host_name in inventory file
+# Make sure to set
+dns_servers:
+  - 1.1.1.1
+  - 8.8.8.8
+int_name: em1

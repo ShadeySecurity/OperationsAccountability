@@ -1,0 +1,12 @@
+team_networks:
+  - 127.0.0.2/32
+target_networks:
+  - 127.0.0.3/32
+nostrike_networks:
+  - 127.0.0.4/32
+windows_ports:
+  - 445
+  - 139
+  - 3389
+linux_ports:
+  - 22

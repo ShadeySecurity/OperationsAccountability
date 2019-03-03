@@ -25,9 +25,10 @@
     path: "{{ file_dir }}"
     state: directory
 - name: Mount SMB Share For Upload
-  expect: "{{ items }}"
+  command: "{{ items }}"
+  become: yes
   with_items:
-    - "sudo mount -t cifs -o username={{ upload_user }} //{{ upload_dir }}/{{ upload_share }} {{ file_dir }}"
+    - "mount -t cifs -o username={{ upload_user }} //{{ upload_dir }}/{{ upload_share }} {{ file_dir }}"
   when: upload_type == "smb"
   register: smb_status
 

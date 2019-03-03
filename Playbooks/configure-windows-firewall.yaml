@@ -1,1 +1,38 @@
 ---
+- name: Disable Firewall
+  win_Firewall:
+    state: disabled
+    profiles:
+      - Domain
+      - Private
+      - Public
+    tags: disable_firewall
+- name: Set Firewall to Baseline
+  win_command: "{{ items }}"
+  loop:
+    - netsh advfirewall firewall policy #TODO
+    - netsh advfirewall firewall delete rule name=ALL
+  tags: win_baseline
+- name: Allow Team In
+  win_firewall_rule:
+    name: Allow Team
+    state: present
+    direction: in
+    remoteip: "{{ team_network}}"
+    localport: "{{ windows_ports }}"
+    enabled: yes
+- name: Allow outbound to team
+  win_firewall_rule:
+    name: Allow To Team
+    state: present
+    direction: out
+    remoteip: "{{ team_network}}"
+    enabled: yes
+- name: Enable Firewall
+  win_Firewall:
+    state: enabled
+    profiles:
+      - Domain
+      - Private
+      - Public
+    tags: enable_firewall

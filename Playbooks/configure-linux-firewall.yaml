@@ -1,0 +1,23 @@
+---
+- name: Disable FirewallD
+  systemd:
+    name: FirewallD
+    enabled: no
+    state: stopped
+    force: yes
+- name: Enable IPTables
+  systemd:
+    name: iptables
+    enabled: yes
+    state: started
+    force: yes
+- name: Flush IPTables
+  command: " {{ items }} "
+  become: yes
+  loop:
+    - iptables -F
+    - iptables -X
+- name: Allow teammates
+  iptables:
+    chain: INPUT
+    source: "{{ team_networks }}"

@@ -1,0 +1,33 @@
+---
+timezone: Pacific Standard Time
+team_networks:
+  - 127.0.0.2/32
+target_networks:
+  - 127.0.0.3/32
+nostrike_networks:
+  - 127.0.0.4/32
+windows_ports:
+  - 445
+  - 139
+  - 3389
+linux_ports:
+  - 22
+username: testuser
+team_name: SuperDoods
+file_dir: /mnt/sharedrive
+lin_packages:
+  - nmcli
+  - ntpdate
+  - dbus
+  - NetworkManager-glib
+# Be sure to assign host_ip and host_netmask in inventory file if not doing DHCP...
+# If no hostname set, or if want to set one, be sure to set host_name in inventory file
+# Make sure to set
+dns_servers:
+  - 1.1.1.1
+  - 8.8.8.8
+upload_type: ssh
+upload_ip: 127.0.0.1
+upload_user: administrator
+int_name: em1
+

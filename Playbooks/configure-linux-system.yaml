@@ -1,0 +1,36 @@
+---
+- name: Disable Interface
+  command: "sudo ip link set down dev {{ int_name }}"
+- name: Enabling CLI Logging
+  lineinfile:
+    regex: 'PROMPT_COMMAND='
+    line: export PROMPT_COMMAND='history -a'
+    path: /home/{{ username }}/.bashrc
+- name: Install needed packages
+  package:
+    name: "{{ lin_ackages }}"
+    state: present
+- name: Setup IP address
+  nmcli:
+    conn_name: "LAN_Network"
+    type: ethernet
+    ifname: '*'
+    state: present
+    mtu: 1450
+    dns4: "{{ dns_servers }}"
+- name: Enable Interface
+  command: "sudo ip link set up dev {{ int_name }}"
+- name: Create Artifact Folder
+  file:
+    path: "{{ file_dir }}"
+    state: directory
+- name: Mount SMB Share For Upload
+  expect: "{{ items }}"
+  with_items:
+    - "sudo mount -t cifs -o username={{ upload_user }} //{{ upload_dir }}/{{ upload_share }} {{ file_dir }}"
+  when: upload_type == "smb"
+  register: smb_status
+
+
+
+

@@ -1,0 +1,21 @@
+---
+- name: do not store passwords using reversible encryption
+  win_security_policy:
+    section: System Access
+    key: ClearTextPassword
+    value: 0
+- name: enable system events
+  win_security_policy:
+    section: Event Audit
+    key: AuditSystemEvents
+    value: 1
+- name: Set Timezone
+  win_timezone:
+    timezone: "{{ team_timezone }}"
+- name: Set Host Name
+  win_hostname:
+    name: "{{ windows_hostname }}"
+  register: res
+- name: Reboot system to apply name
+  win_reboot:
+  when: res.reboot_required

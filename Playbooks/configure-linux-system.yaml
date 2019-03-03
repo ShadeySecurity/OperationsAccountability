@@ -8,7 +8,7 @@
     path: /home/{{ username }}/.bashrc
 - name: Install needed packages
   package:
-    name: "{{ lin_ackages }}"
+    name: "{{ lin_packages }}"
     state: present
 - name: Setup IP address
   nmcli:

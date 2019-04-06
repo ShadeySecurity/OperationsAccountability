@@ -1,23 +1,156 @@
 ---
+#-----
+# Get IPTables Online
+#-----
 - name: Disable FirewallD
   systemd:
     name: FirewallD
     enabled: no
     state: stopped
     force: yes
+  tags:
+    - linux
+    - firewall
 - name: Enable IPTables
   systemd:
     name: iptables
     enabled: yes
     state: started
     force: yes
+  tags:
+    - linux
+    - firewall
 - name: Flush IPTables
   command: " {{ items }} "
   become: yes
   loop:
     - iptables -F
     - iptables -X
+  tags:
+    - linux
+    - firewall
+#-----
+# Basic function rules
+#-----
+- name: Block No-Target Networks
+  iptables:
+    chain: OUTPUT
+    destination: "{{ notarget_networks }}"
+    action: insert
+    comment: "Log attempted touches of notarget"
+    jump: LOG
+  tags:
+    - linux
+    - firewall
+- name: Block No-Target Networks
+  iptables:
+    chain: OUTPUT
+    destination: "{{ notarget_networks }}"
+    action: insert
+    comment: "No Touch Block: Must be at the top of output"
+    set_counters: APPEND
+    jump: REJECT
+  tags:
+    - linux
+    - firewall
 - name: Allow teammates
   iptables:
     chain: INPUT
     source: "{{ team_networks }}"
+    destination_port: "{{ linux_ports }}"
+    comment: "Allow team"
+  tags:
+    - linux
+    - firewall
+- name: Allow TCP reply
+  iptables:
+    chain: INPUT
+    ctstate: ESTABLISHED,RELATED
+    jump: ACCEPT
+    comment: "Allow return TCP traffic"
+  tags:
+    - linux
+    - firewall
+- name: Allow ICMP reply
+  iptables:
+    chain: INPUT
+    protocol: icmp
+    match: icmp
+    jump: ACCEPT
+    icmp_type: 8
+    comment: "Allow ICMP reply"
+  tags:
+    - linux
+    - firewall
+- name: Set DHCP allow or not
+  iptables:
+    chain: INPUT
+    protocol: udp
+    source_port: 67
+    comment: "Allow DHCP response"
+    jump: "{{ DHCP_action }}"
+  tags:
+    - linux
+    - firewall
+- name: Allow local loop
+  iptables:
+    chain: INPUT
+    destination: 127.0.0.0/8
+    out_interface: lo
+    comment: "Allow local loop otherwise certain things break"
+  tags:
+    - linux
+    - firewall
+#-----
+# (Re)Set Target
+#-----
+- name: Allow TCP to target
+  iptables:
+    chain: OUTPUT
+    destination: "{{ target_networks }}"
+    protocol: tcp
+    destination_port: "{{ target_tcpports }}"
+    jump: ACCEPT
+    comment: "Targets"
+  tags:
+    - linux
+    - firewall
+    - settarget
+  when: target_tcp == "yes"
+- name: Allow UDP to targets
+  iptables:
+    chain: OUTPUT
+    destiantion: "{{ target_networks }}"
+    destination_ports: "{{ target_udpports }}"
+    protocol: udp
+    jump: ACCEPT
+    comment: "Targets"
+  tags:
+    - linux
+    - firewall
+    - settarget
+  when: target_udp == "yes"
+- name: Allow UDP from targets in
+  iptables:
+    chain: INPUT
+    destination: "{{ target_networks }}"
+    protocol: UDP
+    jump: ACCEPT
+    comment: "Allow UDP return from targets"
+  tags:
+    - linux
+    - firewall
+    - settarget
+  when: target_udp == "yes"
+- name: Allow ICMP to targets
+  iptables:
+    chain: OUTPUT
+    destination: "{{ target_networks }}"
+    protocol: ICMP
+    jump: ACCEPT
+    comment: "Targets"
+  tags:
+    - linux
+    - firewall
+    - settarget
+  when: target_icmp == "yes"

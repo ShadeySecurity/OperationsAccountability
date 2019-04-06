@@ -1,12 +1,36 @@
+---
+# The network your team is on
 team_networks:
   - 127.0.0.2/32
+# Networks that aren't your team, but you trust and need access to / allow access from
+trusted_network:
+  - 127.0.1.1/32
+# Networks on your target list
 target_networks:
   - 127.0.0.3/32
-nostrike_networks:
+# Target Ports
+target_tcpports:
+  - 80
+  - 443
+  - 445
+  - 139
+  - 22
+target_udpports:
+  - 53
+# set to yes to enable in the firewall
+target_udp: yes
+target_icmp: yes
+target_tcp: yes
+# Networks which you cannot send traffic to
+notarget_networks:
   - 127.0.0.4/32
+# What ports people can connect to the windows host on
 windows_ports:
   - 445
   - 139
   - 3389
+# What ports people can connect to the linux host on
 linux_ports:
   - 22
+# If using DHCP, set to ACCEPT, otherwise set to DROP
+DHCP_action: ACCEPT

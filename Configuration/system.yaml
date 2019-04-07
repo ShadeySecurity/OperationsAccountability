@@ -1,24 +1,14 @@
 ---
 # Standard Time Zone Format for location
 timezone: Pacific Standard Time
-# Username to use when logging in
-username: testuser
-# Name of your team
-team_name: SuperDoods
-# Place to drop and pull results of tests, scans and fact findings from all machines
-file_dir: /mnt/sharedrive
 # Optional packages to install (original 4 are needed for Ansible)
 lin_packages:
   - nmcli
   - ntpdate
   - dbus
   - NetworkManager-glib
-# Method to upload packages to file_dir
-upload_type: scp
-# IP or hostname (if in DNS) of place to upload to
-upload_ip: 127.0.0.1
-# Username to use for uploading
-upload_user: administrator
+# Chocalety Packages to install
+win_packages:
 
 
 

@@ -1,7 +1,0 @@
----
-#-----
-# Variables to apply to all windows hosts
-#-----
-os_name: windows
-upload_type: smb
-ansible_user: administrator

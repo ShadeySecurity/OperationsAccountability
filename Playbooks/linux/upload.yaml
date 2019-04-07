@@ -1,1 +1,6 @@
 ---
+- name: Copy file to another linux system
+  copy:
+    src: "{{ local_cache_dir }}"
+    dest: "{{ upload_dir }}"
+  when: upload_type == "default"

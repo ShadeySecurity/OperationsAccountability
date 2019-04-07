@@ -163,3 +163,19 @@
     - firewall
 - name: Validate Firewall
   command: sudo iptables -nvL
+  register: iptablesfw
+  tags:
+    - linux
+    - firewall
+    - cya
+- debug: var=iptablesfw.stdout_lines
+  tags:
+    - linux
+    - firewall
+    - cya
+- pause:
+    prompt: Once done reviewing please press enter if okay, otherwise cancel script.
+  tags:
+    - linux
+    - firewall
+    - cya

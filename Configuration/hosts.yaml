@@ -6,31 +6,48 @@
 # upload_type: default or smb
 # boot_connect: yes or no
 # ansible_user : username to use when connecting
+# os_name: linux or windows
+# operator_id: ID of the person on a machine
 #---
 # If localhost and not doing DHCP set the following vars:
 # ip_address (CIDR Notation for Linux, normal for windows): X.X.X.X/XX or X.X.X.X
 # win_netmask: X.X.X.X
 # dns_servers: X.X.X.X (can be up to 2 of them in list format)
 # gateway: X.X.X.X
+#---
+# For upload drive, please do not setup more than 1 for now
 #-----
 all:
   children:
-    team1:
-      vars:
-        dhcp: yes
+    team-example:
       children:
-        blueteam:
+        op-tomahawk:
           children:
+            upload_drive:
+              hosts:
+                sharedrive.localnet.xyxa
+              vars:
+                ansible_user: root
+                upload_type: default
             linux:
               vars:
                 int_name: em1
-                upload_type: scp
+                upload_type: default
+                os_name: linux
+                ansible_user: root
               children:
                 scanner:
                   hosts:
-                    127.0.0.1
+                    127.0.0.1:
+                      vars:
+                        operator_id: Bob
             windows:
               vars:
                 int_name: em1
+                upload_type: default
+                os_name: windows
+                ansible_user: administrator
               hosts:
-                somehost.windowshost
+                somehost.windowshost:
+                  vars:
+                    operator_id: Bob

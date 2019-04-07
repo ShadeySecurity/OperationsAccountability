@@ -1,6 +1,18 @@
 ---
+# Copy files from the  remote managed system to share drive via rsync
 - name: Copy file to another linux system
+  synchronize:
+    src: "{{ local_cache_dir }}"
+    dest: "rsync://{{ upload_host }}/{{ upload_dir }}"
+  when: upload_type == "default"
+  delegate_to: delegate.host
+  tags:
+    - upload
+# Copy files from the remote managed system to share drive via smb mount (setup in system playbook)
+- name: Copy file to windows systems
   copy:
     src: "{{ local_cache_dir }}"
-    dest: "{{ upload_dir }}"
-  when: upload_type == "default"
+    dest: "{{ smb_mount }}/{{ upload_dir }}"
+  tags:
+    - upload
+# I might consider a winrm copy in future if we need it using the win_copy command

@@ -8,6 +8,8 @@ trusted_network:
 # Networks on your target list
 target_networks:
   - 127.0.0.3/32
+target_ranges:
+  - 127.1.0.5-10
 # Target Ports
 target_tcpports:
   - 80
@@ -24,6 +26,8 @@ target_tcp: yes
 # Networks which you cannot send traffic to
 notarget_networks:
   - 127.0.0.4/32
+notarget_ranges:
+  - 127.2.0.5-10
 # What ports people can connect to the windows host on
 windows_ports:
   - 445

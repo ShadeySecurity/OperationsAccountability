@@ -5,7 +5,6 @@
     key: ClearTextPassword
     value: 0
   tags:
-    - windows
     - system
 - name: enable system events
   win_security_policy:
@@ -13,30 +12,25 @@
     key: AuditSystemEvents
     value: 1
   tags:
-    - windows
     - system
 - name: Set Timezone
   win_timezone:
     timezone: "{{ team_timezone }}"
   tags:
-    - windows
     - system
 - name: set log retention
   win_eventlog:
     retention_days: 180
   tags:
-    - windows
     - system
 - name: Set Host Name
   win_hostname:
     name: "{{ windows_hostname }}"
   register: res
   tags:
-    - windows
     - system
 - name: Reboot system to apply name
   win_reboot:
   when: res.reboot_required
   tags:
-    - windows
     - system

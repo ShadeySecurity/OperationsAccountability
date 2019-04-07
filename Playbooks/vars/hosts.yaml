@@ -14,21 +14,20 @@
 # win_netmask: X.X.X.X
 # dns_servers: X.X.X.X (can be up to 2 of them in list format)
 # gateway: X.X.X.X
-#---
-# For upload drive, please do not setup more than 1 for now
 #-----
 all:
+  vars:
+    local_cache_dir: /var/cache/pyaccountabily
   children:
     team-example:
+      vars:
+        smb_mount: /mnt/myshare
+        upload_user: bob-admin
+        upload_dir: /sharedrive/artifacts
+        upload_host: sharedrive.localnet.xyxa
       children:
         op-tomahawk:
           children:
-            upload_drive:
-              hosts:
-                sharedrive.localnet.xyxa
-              vars:
-                ansible_user: root
-                upload_type: default
             linux:
               vars:
                 int_name: em1

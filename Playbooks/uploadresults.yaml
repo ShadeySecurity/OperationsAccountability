@@ -1,0 +1,14 @@
+---
+- hosts: all
+  vars:
+  become: yes
+  strategy: free
+  tasks:
+    - include_tasks: linux/upload.yaml
+      when: os_name == "linux"
+      tags:
+        - uploads
+    - include_tasks: windows/upload.yaml
+      when: os_name == "windows"
+      tags:
+        - uploads

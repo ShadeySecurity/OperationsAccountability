@@ -4,7 +4,6 @@
   command: "sudo ip link set down dev {{ int_name }}"
   tags:
     - system
-    - linux
   when: inventory_hostname == "localhost"
 # Install any packages needed
 - name: Install Packages
@@ -13,36 +12,31 @@
     state: present
   tags:
     - system
-    - linux
 # Setup networking
 - name: Enable Interface
   command: "sudo ip link set up dev {{ int_name }}"
   tags:
     - system
-    - linux
 - name: Create Artifact Folder Cache
   file:
     path: "{{ local_cache_dir }}"
     state: directory
   tags:
     - system
-    - linux
 # If method is smb, use smb for upload to shared location
 - name: Mount SMB Share For Upload
   command: "{{ items }}"
   become: yes
   with_items:
-    - "mount -t cifs -o username={{ upload_user }} //{{ upload_ip}}/{{ upload_dir }} {{ smb_mount }}"
+    - "mount -t cifs -o username={{ upload_user }} //{{ upload_host}}/{{ upload_dir }} {{ smb_mount }}"
   when: upload_type == "smb"
   register: smb_status
   tags:
     - system
-    - linux
 - debug: var=smb_status.stdout_lines
   when: upload_type == "smb"
   tags:
     - system
-    - linux
 
 
 

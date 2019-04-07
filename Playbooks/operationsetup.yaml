@@ -1,0 +1,50 @@
+---
+#-----
+# This is the main playbook which runs the sub playbooks in the sub-directories.
+# This should never need to be updated, more likely the sub playbooks should be edited instead.
+#-----
+
+#---
+# Get The local machine setup
+#---
+- hosts: all
+  vars:
+  become: yes
+  strategy: serial
+  tasks:
+    - name: Warn users
+      command: wall -n This host is being configured by the PyOperations automated configuration
+    - import_tasks: linux/accountability.yaml
+      when: os_name == "linux"
+      include_vars
+      tags:
+        - linux
+    - import_tasks: linux/firewall.yaml
+      when: os_name == "linux"
+      tags:
+        - linux
+    - import_tasks: linux/network.yaml
+      when: os_name == "linux"
+      tags:
+        - linux
+    - import_tasks: linux/system.yaml
+      when: os_name == "linux"
+      tags:
+        - linux
+    - import_tasks: windows/accountability.yaml
+      when: os_name == "windows"
+      tags:
+        - windows
+    - import_tasks: windows/firewall.yaml
+      when: os_name == "windows"
+      tags:
+        - windows
+    - import_tasks: windows/network.yaml
+      when: os_name == "windows"
+      tags:
+        - windows
+    - import_tasks: windows/system.yaml
+      when: os_name == "windows"
+      tags:
+        - windows
+

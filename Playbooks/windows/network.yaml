@@ -9,7 +9,6 @@
     - netsh interface ipv4 set address name="{{ int_name }}" dhcp
   when: dhcp == "yes"
   tags:
-    - windows
     - network
 #-----
 # Static setup
@@ -23,11 +22,9 @@
     - netsh interface ipv4 set dns name="{{ int_name }}" static "{{ dns_servers.0 }}"
   when: dhcp == "no"
   tags:
-    - windows
     - network
 # Add the second DNS server if set
 - win_command: netsh interface ipv4 set dns name="{{ int_name }}" static "{{ dns_servers.1 }}" index=2
   when: dns_servers.1 is defined and dhcp == "no"
   tags:
-    - windows
     - network

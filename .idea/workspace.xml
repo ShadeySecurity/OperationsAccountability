@@ -2,15 +2,27 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="04788311-288f-45cb-9db2-12bce244d831" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/Configuration/upload.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Playbooks/operationsetup.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Playbooks/uploadresults.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Configuration/hosts.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/Configuration/hosts.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Configuration/linux.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Configuration/system.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/Configuration/system.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Configuration/windows.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Archive/Libraries/FirewallInit.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Archive/Libraries/SystemInit.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Archive/POB_HOST.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Configuration/ansible-install.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/Playbooks/vars/ansible-install.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Configuration/firewall.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/Playbooks/vars/firewall.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Configuration/hosts.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/Playbooks/vars/hosts.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Configuration/system.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/Playbooks/vars/system.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Configuration/upload.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Playbooks/linux/accountability.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/Playbooks/linux/accountability.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Playbooks/linux/firewall.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/Playbooks/linux/firewall.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Playbooks/linux/network.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/Playbooks/linux/network.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Playbooks/linux/system.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/Playbooks/linux/system.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Playbooks/linux/upload.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/Playbooks/linux/upload.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Playbooks/windows/accountability.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/Playbooks/windows/accountability.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Playbooks/windows/firewall.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/Playbooks/windows/firewall.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Playbooks/windows/network.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/Playbooks/windows/network.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Playbooks/windows/system.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/Playbooks/windows/system.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Playbooks/windows/upload.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/Playbooks/windows/upload.yaml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -21,46 +33,46 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Playbooks/operationsetup.yaml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="180">
+              <caret line="12" column="2" lean-forward="true" selection-start-line="12" selection-start-column="2" selection-end-line="12" selection-end-column="18" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Playbooks/linux/firewall.yaml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="120">
+              <caret line="109" column="57" selection-start-line="109" selection-start-column="57" selection-end-line="109" selection-end-column="57" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Playbooks/linux/upload.yaml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="75">
-              <caret line="5" column="25" lean-forward="true" selection-start-line="5" selection-start-column="25" selection-end-line="5" selection-end-column="25" />
+            <state relative-caret-position="240">
+              <caret line="16" column="12" selection-start-line="16" selection-start-column="12" selection-end-line="16" selection-end-column="12" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Configuration/hosts.yaml">
+        <entry file="file://$PROJECT_DIR$/Playbooks/uploadresults.yaml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="17" column="59" selection-start-line="17" selection-start-column="59" selection-end-line="17" selection-end-column="59" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Configuration/upload.yaml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="15">
-              <caret line="1" selection-start-line="1" selection-end-line="1" />
+            <state relative-caret-position="60">
+              <caret line="4" column="16" selection-start-line="4" selection-start-column="16" selection-end-line="4" selection-end-column="16" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/Playbooks/linux/system.yaml">
+        <entry file="file://$PROJECT_DIR$/Playbooks/vars/firewall.yaml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="630">
-              <caret line="42" selection-start-line="42" selection-end-line="42" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Configuration/system.yaml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <caret column="3" lean-forward="true" selection-start-column="3" selection-end-column="3" />
+            <state relative-caret-position="435">
+              <caret line="29" column="9" selection-start-line="29" selection-start-column="9" selection-end-line="29" selection-end-column="9" />
             </state>
           </provider>
         </entry>
@@ -81,6 +93,7 @@
       <find>partner</find>
       <find>dns</find>
       <find>new ter</find>
+      <find>linu</find>
     </findStrings>
     <replaceStrings>
       <replace>-d</replace>
@@ -122,16 +135,25 @@
         <option value="$PROJECT_DIR$/Playbooks/configure-windows-network.yaml" />
         <option value="$PROJECT_DIR$/Playbooks/configure-linux-system.yaml" />
         <option value="$PROJECT_DIR$/Playbooks/windows-cya.yaml" />
-        <option value="$PROJECT_DIR$/Playbooks/linux/accountability.yaml" />
-        <option value="$PROJECT_DIR$/Playbooks/windows/accountability.yaml" />
-        <option value="$PROJECT_DIR$/Playbooks/linux/firewall.yaml" />
         <option value="$PROJECT_DIR$/Configuration/linux.yaml" />
         <option value="$PROJECT_DIR$/Configuration/operations.yaml" />
-        <option value="$PROJECT_DIR$/Playbooks/linux/upload.yaml" />
-        <option value="$PROJECT_DIR$/Configuration/upload.yaml" />
-        <option value="$PROJECT_DIR$/Configuration/hosts.yaml" />
-        <option value="$PROJECT_DIR$/Playbooks/linux/system.yaml" />
         <option value="$PROJECT_DIR$/Configuration/system.yaml" />
+        <option value="$PROJECT_DIR$/Configuration/upload.yaml" />
+        <option value="$PROJECT_DIR$/Playbooks/windows/upload.yaml" />
+        <option value="$PROJECT_DIR$/Configuration/hosts.yaml" />
+        <option value="$PROJECT_DIR$/Playbooks/windows/accountability.yaml" />
+        <option value="$PROJECT_DIR$/Playbooks/linux/accountability.yaml" />
+        <option value="$PROJECT_DIR$/Playbooks/linux/network.yaml" />
+        <option value="$PROJECT_DIR$/Playbooks/linux/system.yaml" />
+        <option value="$PROJECT_DIR$/Playbooks/linux/upload.yaml" />
+        <option value="$PROJECT_DIR$/Playbooks/windows/firewall.yaml" />
+        <option value="$PROJECT_DIR$/Playbooks/windows/network.yaml" />
+        <option value="$PROJECT_DIR$/Playbooks/windows/system.yaml" />
+        <option value="$PROJECT_DIR$/Playbooks/linux/uploadresults.yaml" />
+        <option value="$PROJECT_DIR$/Playbooks/operationsetup.yaml" />
+        <option value="$PROJECT_DIR$/Configuration/firewall.yaml" />
+        <option value="$PROJECT_DIR$/Playbooks/linux/firewall.yaml" />
+        <option value="$PROJECT_DIR$/Playbooks/uploadresults.yaml" />
       </list>
     </option>
   </component>
@@ -160,32 +182,25 @@
             <path>
               <item name="OperationsAccountability" type="b2602c69:ProjectViewProjectNode" />
               <item name="OperationsAccountability" type="462c0819:PsiDirectoryNode" />
-              <item name="Archive" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="OperationsAccountability" type="b2602c69:ProjectViewProjectNode" />
-              <item name="OperationsAccountability" type="462c0819:PsiDirectoryNode" />
-              <item name="Configuration" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="OperationsAccountability" type="b2602c69:ProjectViewProjectNode" />
-              <item name="OperationsAccountability" type="462c0819:PsiDirectoryNode" />
               <item name="Playbooks" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="OperationsAccountability" type="b2602c69:ProjectViewProjectNode" />
               <item name="OperationsAccountability" type="462c0819:PsiDirectoryNode" />
               <item name="Playbooks" type="462c0819:PsiDirectoryNode" />
-              <item name="linux" type="462c0819:PsiDirectoryNode" />
+              <item name="ansible" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="OperationsAccountability" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="OperationsAccountability" type="462c0819:PsiDirectoryNode" />
+              <item name="Playbooks" type="462c0819:PsiDirectoryNode" />
+              <item name="vars" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="OperationsAccountability" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-              <item name="&lt; Python 3.6 &gt;" type="70bed36:NamedLibraryElementNode" />
+              <item name="OperationsAccountability" type="462c0819:PsiDirectoryNode" />
+              <item name="Playbooks" type="462c0819:PsiDirectoryNode" />
+              <item name="windows" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -201,11 +216,11 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/Playbooks" />
       <recent name="$PROJECT_DIR$/Playbooks/windows" />
       <recent name="$PROJECT_DIR$/Playbooks/linux" />
       <recent name="$PROJECT_DIR$/Playbooks/initial" />
       <recent name="$PROJECT_DIR$/Configuration" />
-      <recent name="$PROJECT_DIR$/Archive" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -343,7 +358,14 @@
       <option name="project" value="LOCAL" />
       <updated>1554654450126</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="Cleaning things up a bit and using the hosts file a bit more...&#10;Kinda trying to migrate my shell script only having to update hosts">
+      <created>1554657036696</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1554657036696</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -402,7 +424,8 @@
     <MESSAGE value="Morning push." />
     <MESSAGE value="Supporting yamls are created... just gotta create the tie together &amp; FE." />
     <MESSAGE value="Moving to a more professional flow in things." />
-    <option name="LAST_COMMIT_MESSAGE" value="Moving to a more professional flow in things." />
+    <MESSAGE value="Cleaning things up a bit and using the hosts file a bit more...&#10;Kinda trying to migrate my shell script only having to update hosts" />
+    <option name="LAST_COMMIT_MESSAGE" value="Cleaning things up a bit and using the hosts file a bit more...&#10;Kinda trying to migrate my shell script only having to update hosts" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="editorHistoryManager">
@@ -429,20 +452,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Playbooks/windows/firewall.yaml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="15" column="7" selection-start-line="15" selection-start-column="7" selection-end-line="15" selection-end-column="7" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Configuration/firewall.yaml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="615">
-          <caret line="41" column="8" selection-start-line="41" selection-start-column="8" selection-end-line="41" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Configuration/network-conf.yaml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="75">
@@ -457,66 +466,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Configuration/ansible-install.yaml">
+    <entry file="file://$PROJECT_DIR$/Playbooks/vars/ansible-install.yaml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="45">
           <caret line="3" selection-start-line="3" selection-end-line="3" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Playbooks/windows/upload.yaml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="1" selection-start-line="1" selection-end-line="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Playbooks/windows/system.yaml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="630">
-          <caret line="42" selection-start-line="42" selection-end-line="42" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Playbooks/linux/network.yaml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="12" selection-start-line="12" selection-end-line="14" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Playbooks/windows/network.yaml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="480">
-          <caret line="32" column="13" selection-start-line="32" selection-start-column="13" selection-end-line="32" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Archive/POB_HOST.sh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="432">
-          <caret line="258" selection-start-line="258" selection-end-line="259" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Playbooks/linux/accountability.yaml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="17" column="64" selection-start-line="17" selection-start-column="64" selection-end-line="17" selection-end-column="64" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Playbooks/linux/firewall.yaml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="541">
-          <caret line="166" column="7" lean-forward="true" selection-start-line="166" selection-start-column="7" selection-end-line="166" selection-end-column="7" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Playbooks/windows/accountability.yaml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="1" selection-start-line="1" selection-end-line="1" />
         </state>
       </provider>
     </entry>
@@ -541,38 +494,122 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Configuration/upload.yaml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="1" selection-start-line="1" selection-end-line="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Configuration/hosts.yaml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="17" column="59" selection-start-line="17" selection-start-column="59" selection-end-line="17" selection-end-column="59" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Playbooks/linux/upload.yaml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
-          <caret line="5" column="25" lean-forward="true" selection-start-line="5" selection-start-column="25" selection-end-line="5" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Configuration/system.yaml">
+    <entry file="file://$PROJECT_DIR$/Playbooks/vars/system.yaml">
       <provider selected="true" editor-type-id="text-editor">
         <state>
           <caret column="3" lean-forward="true" selection-start-column="3" selection-end-column="3" />
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Configuration/upload.yaml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="8" selection-start-line="8" selection-end-line="8" selection-end-column="37" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Archive/POB_HOST.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3870">
+          <caret line="258" selection-start-line="258" selection-end-line="259" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Playbooks/vars/hosts.yaml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="450">
+          <caret line="30" column="18" lean-forward="true" selection-start-line="30" selection-start-column="18" selection-end-line="30" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Playbooks/linux/accountability.yaml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="7" selection-start-line="7" selection-end-line="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Playbooks/linux/network.yaml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="540">
+          <caret line="36" selection-start-line="36" selection-end-line="36" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Playbooks/linux/system.yaml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="630">
-          <caret line="42" selection-start-line="42" selection-end-line="42" />
+        <state relative-caret-position="90">
+          <caret line="6" selection-start-line="6" selection-end-line="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Playbooks/windows/accountability.yaml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15">
+          <caret line="1" column="71" selection-start-line="1" selection-start-column="71" selection-end-line="1" selection-end-column="71" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Playbooks/windows/firewall.yaml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="795">
+          <caret line="53" selection-start-line="53" selection-end-line="53" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Playbooks/windows/network.yaml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="435">
+          <caret line="29" selection-start-line="29" selection-end-line="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Playbooks/windows/system.yaml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="525">
+          <caret line="35" selection-start-line="35" selection-end-line="35" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Playbooks/windows/upload.yaml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15">
+          <caret line="1" column="53" selection-start-line="1" selection-start-column="53" selection-end-line="1" selection-end-column="53" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Playbooks/linux/upload.yaml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="16" column="12" selection-start-line="16" selection-start-column="12" selection-end-line="16" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Playbooks/linux/firewall.yaml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="109" column="57" selection-start-line="109" selection-start-column="57" selection-end-line="109" selection-end-column="57" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Playbooks/operationsetup.yaml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="12" column="2" lean-forward="true" selection-start-line="12" selection-start-column="2" selection-end-line="12" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Playbooks/uploadresults.yaml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="4" column="16" selection-start-line="4" selection-start-column="16" selection-end-line="4" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Playbooks/vars/firewall.yaml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="435">
+          <caret line="29" column="9" selection-start-line="29" selection-start-column="9" selection-end-line="29" selection-end-column="9" />
         </state>
       </provider>
     </entry>

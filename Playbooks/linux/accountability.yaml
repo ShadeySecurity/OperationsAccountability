@@ -5,7 +5,7 @@
     - nohup tcpdump -ni "{{ int_name }}" -w /tmp/PCAP-$(date +'%Y%m%d_%H%M%S')_"{{ operation_id }}"_"{{ operator_id }}".pcap
   tags:
     - cya
-    - linux
+
 # Tell Linux to log any CLI commands entered
 - name: Enabling CLI Logging
   lineinfile:
@@ -14,5 +14,5 @@
     path: /home/{{ username }}/.bashrc
   tags:
     - cya
-    - linux
+
 # The firewall review is now at the end of the firewall playbook

@@ -11,7 +11,6 @@
     dns4: "{{ dns_servers }}"
   when: dhcp == "no"
   tags:
-    - linux
     - network
 
 - name: Setup DHCP host
@@ -26,7 +25,6 @@
     dns4: "{{ dns_servers }}"
   when: dhcp == "yes"
   tags:
-    - linux
     - network
 
 - name: Setup autoconnect
@@ -36,5 +34,4 @@
     ifname: "*"
       autoconnect: "{{ boot_connect }}"
   tags:
-    - linux
     - network

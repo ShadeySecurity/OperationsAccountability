@@ -9,16 +9,6 @@
     state: stopped
     force: yes
   tags:
-    - linux
-    - firewall
-- name: Enable IPTables
-  systemd:
-    name: iptables
-    enabled: yes
-    state: started
-    force: yes
-  tags:
-    - linux
     - firewall
 - name: Flush IPTables
   command: " {{ items }} "
@@ -27,7 +17,6 @@
     - iptables -F
     - iptables -X
   tags:
-    - linux
     - firewall
 #-----
 # Basic function rules
@@ -37,21 +26,27 @@
     chain: OUTPUT
     destination: "{{ notarget_networks }}"
     action: insert
-    comment: "Log attempted touches of notarget"
-    jump: LOG
-  tags:
-    - linux
-    - firewall
-- name: Block No-Target Networks
-  iptables:
-    chain: OUTPUT
-    destination: "{{ notarget_networks }}"
-    action: insert
     comment: "No Touch Block: Must be at the top of output"
     set_counters: APPEND
     jump: REJECT
   tags:
-    - linux
+    - firewall
+- name: Block No-Target Ranges
+  command: IPTABLES -I OUTPUT -m iprange --dest-range "{{ notarget_ranges }}" -j REJECT
+  tags:
+    - firewall
+- name: Log No-Target Networks
+  iptables:
+    chain: OUTPUT
+    destination: "{{ notarget_networks }}"
+    action: insert
+    comment: "Log attempted touches of notarget"
+    jump: LOG
+  tags:
+    - firewall
+- name: Log No-Target Ranges
+  command: iptables -I OUTPUT 2 --dest "{{ notarget_ranges }}" -j LOG
+  tags:
     - firewall
 - name: Allow teammates
   iptables:
@@ -60,7 +55,6 @@
     destination_port: "{{ linux_ports }}"
     comment: "Allow team"
   tags:
-    - linux
     - firewall
 - name: Allow TCP reply
   iptables:
@@ -69,7 +63,6 @@
     jump: ACCEPT
     comment: "Allow return TCP traffic"
   tags:
-    - linux
     - firewall
 - name: Allow ICMP reply
   iptables:
@@ -80,7 +73,6 @@
     icmp_type: 8
     comment: "Allow ICMP reply"
   tags:
-    - linux
     - firewall
 - name: Set DHCP allow or not
   iptables:
@@ -90,7 +82,6 @@
     comment: "Allow DHCP response"
     jump: "{{ DHCP_action }}"
   tags:
-    - linux
     - firewall
 - name: Allow local loop
   iptables:
@@ -99,12 +90,11 @@
     out_interface: lo
     comment: "Allow local loop otherwise certain things break"
   tags:
-    - linux
     - firewall
 #-----
 # (Re)Set Target
 #-----
-- name: Allow TCP to target
+- name: Allow TCP to target networks
   iptables:
     chain: OUTPUT
     destination: "{{ target_networks }}"
@@ -113,9 +103,13 @@
     jump: ACCEPT
     comment: "Targets"
   tags:
-    - linux
     - firewall
     - settarget
+  when: target_tcp == "yes"
+- name: Allow TCP to target ranges
+  command: iptables -A OUTPUT -p tcp "-d {{ target_ranges }}" --dports "{{ target_tcpports }}" -j ACCEPT
+  tags:
+    - firewall
   when: target_tcp == "yes"
 - name: Allow UDP to targets
   iptables:
@@ -126,10 +120,14 @@
     jump: ACCEPT
     comment: "Targets"
   tags:
-    - linux
     - firewall
     - settarget
   when: target_udp == "yes"
+- name: Allow UDP to target ranges
+  command: iptables -A OUTPUT -p udp "-d {{ target_ranges }}" --dports "{{ target_udpports }}" -j ACCEPT
+  tags:
+    - firewall
+  when: target_tcp == "yes"
 - name: Allow UDP from targets in
   iptables:
     chain: INPUT
@@ -138,7 +136,6 @@
     jump: ACCEPT
     comment: "Allow UDP return from targets"
   tags:
-    - linux
     - firewall
     - settarget
   when: target_udp == "yes"
@@ -150,7 +147,6 @@
     jump: ACCEPT
     comment: "Targets"
   tags:
-    - linux
     - firewall
     - settarget
   when: target_icmp == "yes"
@@ -159,23 +155,19 @@
     chain: OUTPUT
     uid_owner: "{{ restricted_users }}"
   tags:
-    - linux
     - firewall
 - name: Validate Firewall
   command: sudo iptables -nvL
   register: iptablesfw
   tags:
-    - linux
     - firewall
     - cya
 - debug: var=iptablesfw.stdout_lines
   tags:
-    - linux
     - firewall
     - cya
 - pause:
     prompt: Once done reviewing please press enter if okay, otherwise cancel script.
   tags:
-    - linux
     - firewall
     - cya

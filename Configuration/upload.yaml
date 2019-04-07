@@ -1,9 +1,0 @@
----
-# Username to use for uploading
-upload_user: administrator
-# Place to drop and pull results of tests, scans and fact findings from all machines
-upload_dir: /sharedrive/artifacts
-# Local location to drop files before upload
-local_cache_dir: /var/cache/pyaccountabily
-# If using SMB... here is where we mount it
-smb_mount: /mnt/sharedrive

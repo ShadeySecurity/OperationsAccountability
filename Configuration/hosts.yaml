@@ -5,6 +5,7 @@
 # int_name: the name of the interface to apply ip config to
 # upload_type: default or smb
 # boot_connect: yes or no
+# ansible_user : username to use when connecting
 #---
 # If localhost and not doing DHCP set the following vars:
 # ip_address (CIDR Notation for Linux, normal for windows): X.X.X.X/XX or X.X.X.X

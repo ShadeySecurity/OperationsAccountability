@@ -6,15 +6,6 @@
     - system
     - linux
   when: inventory_hostname == "localhost"
-# Tell Linux to log any CLI commands entered
-- name: Enabling CLI Logging
-  lineinfile:
-    regex: 'PROMPT_COMMAND='
-    line: export PROMPT_COMMAND='history -a'
-    path: /home/{{ username }}/.bashrc
-  tags:
-    - system
-    - linux
 # Install any packages needed
 - name: Install Packages
   package:

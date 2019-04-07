@@ -1,0 +1,35 @@
+---
+#-----
+# Vars to set for all hosts:
+# dhcp: yes or no
+# int_name: the name of the interface to apply ip config to
+# upload_type: default or smb
+# boot_connect: yes or no
+#---
+# If localhost and not doing DHCP set the following vars:
+# ip_address (CIDR Notation for Linux, normal for windows): X.X.X.X/XX or X.X.X.X
+# win_netmask: X.X.X.X
+# dns_servers: X.X.X.X (can be up to 2 of them in list format)
+# gateway: X.X.X.X
+#-----
+all:
+  children:
+    team1:
+      vars:
+        dhcp: yes
+      children:
+        blueteam:
+          children:
+            linux:
+              vars:
+                int_name: em1
+                upload_type: scp
+              children:
+                scanner:
+                  hosts:
+                    127.0.0.1
+            windows:
+              vars:
+                int_name: em1
+              hosts:
+                somehost.windowshost

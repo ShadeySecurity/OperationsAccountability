@@ -1,10 +1,11 @@
 ---
-# Make sure interface is set to down
+# Make sure interface is set to down as extra paranoid precaution if we are running this locally
 - name: Disable Interface
   command: "sudo ip link set down dev {{ int_name }}"
   tags:
     - system
     - linux
+  when: inventory_hostname == "localhost"
 # Tell Linux to log any CLI commands entered
 - name: Enabling CLI Logging
   lineinfile:
@@ -23,17 +24,6 @@
     - system
     - linux
 # Setup networking
-- name: Setup IP address
-  nmcli:
-    conn_name: "LAN_Network"
-    type: ethernet
-    ifname: '*'
-    state: present
-    mtu: 1450
-    dns4: "{{ dns_servers }}"
-  tags:
-    - system
-    - linux
 - name: Enable Interface
   command: "sudo ip link set up dev {{ int_name }}"
   tags:

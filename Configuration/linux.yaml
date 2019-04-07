@@ -1,0 +1,6 @@
+---
+#-----
+# Variables to apply to all linux hosts
+#-----
+os_name: linux
+ansible_user: root

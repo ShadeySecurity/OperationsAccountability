@@ -1,0 +1,40 @@
+---
+- name: Setup Non-DHCP host
+  nmcli:
+    conn_name: "LAN_Network"
+    type: ethernet
+    ifname: "{{ int_name }}"
+    state: present
+    mtu: 1450
+    ip4: "{{ ip_address }}"
+    gw4: "{{ gateway }}"
+    dns4: "{{ dns_servers }}"
+  when: dhcp == "no"
+  tags:
+    - linux
+    - network
+
+- name: Setup DHCP host
+  nmcli:
+    conn_name: "LAN_Network"
+    type: ethernet
+    ifname: "{{ int_name }}"
+    state: present
+    mtu: 1450
+    ip4: "{{ ip_address }}"
+    gw4: "{{ gateway }}"
+    dns4: "{{ dns_servers }}"
+  when: dhcp == "yes"
+  tags:
+    - linux
+    - network
+
+- name: Setup autoconnect
+  nmcli:
+    conn_name: "LAN_Network"
+    type: ethernet
+    ifname: "*"
+      autoconnect: "{{ boot_connect }}"
+  tags:
+    - linux
+    - network

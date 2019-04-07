@@ -154,3 +154,10 @@
     - firewall
     - settarget
   when: target_icmp == "yes"
+- name: Block communications from restricted users
+  iptables:
+    chain: OUTPUT
+    uid_owner: "{{ restricted_users }}"
+  tags:
+    - linux
+    - firewall

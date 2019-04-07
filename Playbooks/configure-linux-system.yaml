@@ -46,6 +46,7 @@
   tags:
     - system
     - linux
+# TODO set ip address
 # If method is smb, use smb for upload to shared location
 - name: Mount SMB Share For Upload
   command: "{{ items }}"
@@ -57,6 +58,7 @@
   tags:
     - system
     - linux
+- debug: var=smb_status.stdout_lines
 
 
 

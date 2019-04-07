@@ -34,3 +34,9 @@ linux_ports:
   - 22
 # If using DHCP, set to ACCEPT, otherwise set to DROP
 DHCP_action: ACCEPT
+# Set windows default policy
+win_fw_policy_in: blockinbound
+win_fw_policy_out: blockoutbound
+# Users not allowed to communicate
+restricted_users:
+  - root

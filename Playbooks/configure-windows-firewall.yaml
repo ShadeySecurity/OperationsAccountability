@@ -12,8 +12,8 @@
 - name: Set Firewall to Baseline
   win_command: "{{ items }}"
   loop:
-    - netsh advfirewall firewall policy #TODO
     - netsh advfirewall firewall delete rule name=ALL
+    - "netsh advfirewall firewall set allprofiles firewallpolicy {{ win_fw_policy }}"
   tags:
     - windows
     - firewall
